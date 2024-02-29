@@ -62,8 +62,8 @@
                 </div>
             </div>
             <div style="display: flex; flex-direction: row; font-size: 20px; color: white; font-family: Arial; cursor: pointer;">
-                <a href = "http://localhost:3500/homepage.html"style="margin-right: 10px; cursor: pointer;">All Post</a>
-                <a href = "http://localhost:3500/yourpost.html" style="cursor: pointer;">Your Post</a>
+                <a href = "https://nodeforumapp.onrender.com/homepage.html"style="margin-right: 10px; cursor: pointer;">All Post</a>
+                <a href = "https://nodeforumapp.onrender.com/yourpost.html" style="cursor: pointer;">Your Post</a>
             </div>
             <button class="LogOut" style="cursor: pointer;">LogOut</button>
         </div>
@@ -93,7 +93,7 @@
 <script>
     $(document).ready(async function () {
         await $.ajax({
-            url: "http://localhost:3500/refreshme",
+            url: "https://nodeforumapp.onrender.com/refreshme",
             method: "GET",
             success: function (data) {
                 $.ajaxSetup({
@@ -106,7 +106,7 @@
             error: function (xhr, textStatus, errorThrown) {
                 if (xhr.status === 403 || xhr.status === 401) {
                     $.ajax({
-                        url: "http://localhost:3500/logout",
+                        url: "https://nodeforumapp.onrender.com/logout",
                         method: "GET",
                         success: function (data) {
                             $.ajaxSetup({
@@ -117,7 +117,7 @@
                         }
                     })
                 }
-                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html")
             }
         })
 
@@ -129,7 +129,7 @@
         }
 
         $.ajax({
-            url: "http://localhost:3500/getAllPost",
+            url: "https://nodeforumapp.onrender.com/getAllPost",
             method: "GET",
             success: function (data) {
                 var start = data.length - 1;
@@ -200,7 +200,7 @@
                 for (nn of allDeleteBut) {
                     nn.addEventListener("click", function (e) {
                         $.ajax({
-                            url: "http://localhost:3500/deletePost",
+                            url: "https://nodeforumapp.onrender.com/deletePost",
                             method: "POST",
                             data: {
                                 "uId": parseInt(nn.parentElement.parentElement.firstElementChild.firstElementChild.innerText)
@@ -211,7 +211,7 @@
                             error: function (xhr, textStatus, errorThrown) {
                                 if (xhr.status === 403) {
                                     $.ajax({
-                                        url: "http://localhost:3500/refreshme",
+                                        url: "https://nodeforumapp.onrender.com/refreshme",
                                         method: "GET",
                                         success: function (data) {
                                             $.ajaxSetup({
@@ -223,7 +223,7 @@
                                         error: function (xhr, textStatus, errorThrown) {
                                             if (xhr.status === 403 || xhr.status === 401) {
                                                 $.ajax({
-                                                    url: "http://localhost:3500/logout",
+                                                    url: "https://nodeforumapp.onrender.com/logout",
                                                     method: "GET",
                                                     success: function (data) {
                                                        
@@ -235,7 +235,7 @@
                                                     }
                                                 })
                                             }
-                                            window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                            window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html")
                                         }
                                     })
                                 } else {
@@ -258,7 +258,7 @@
                         }
                         else {
                             $.ajax({
-                                url: "http://localhost:3500/replyPost",
+                                url: "https://nodeforumapp.onrender.com/replyPost",
                                 method: "POST",
                                 data: {
                                     "postIdref": parseInt(this.parentElement.parentElement.parentElement.firstElementChild.firstElementChild.innerText),
@@ -271,7 +271,7 @@
                                 error: function (xhr, textStatus, errorThrown) {
                                     if (xhr.status === 403) {
                                         $.ajax({
-                                            url: "http://localhost:3500/refreshme",
+                                            url: "https://nodeforumapp.onrender.com/refreshme",
                                             method: "GET",
                                             success: function (data) {
                                                 $.ajaxSetup({
@@ -284,7 +284,7 @@
                                                 if (xhr.status === 403 || xhr.status === 401) {
                                                     
                                                     $.ajax({
-                                                        url: "http://localhost:3500/logout",
+                                                        url: "https://nodeforumapp.onrender.com/logout",
                                                         method: "GET",
                                                         success: function (data) {
                                                             
@@ -296,7 +296,7 @@
                                                         }
                                                     })
                                                 }
-                                                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                                window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html")
                                             }
                                         })
                                     } else {
@@ -329,7 +329,7 @@
                         var postIdnum = this.parentElement.parentElement.firstElementChild.firstElementChild.innerText
 
                         $.ajax({
-                            url: "http://localhost:3500/getReply",
+                            url: "https://nodeforumapp.onrender.com/getReply",
                             method: "POST",
                             data: {
                                 "postIdref": parseInt(postIdnum)
@@ -380,7 +380,7 @@
                                         var parentofall = this.parentElement.parentElement.parentElement.parentElement.parentElement
                                         
                                         $.ajax({
-                                            url: "http://localhost:3500/deleteReply",
+                                            url: "https://nodeforumapp.onrender.com/deleteReply",
                                             method: "POST",
                                             data: {
                                                 "uid": parseInt(replyuid)
@@ -391,7 +391,7 @@
                                             error: function (xhr, textStatus, errorThrown) {
                                                 if (xhr.status === 403) {
                                                     $.ajax({
-                                                        url: "http://localhost:3500/refreshme",
+                                                        url: "https://nodeforumapp.onrender.com/refreshme",
                                                         method: "GET",
                                                         success: function (data) {
                                                             
@@ -405,7 +405,7 @@
                                                             if (xhr.status === 403 || xhr.status === 401) {
                                                                 
                                                                 $.ajax({
-                                                                    url: "http://localhost:3500/logout",
+                                                                    url: "https://nodeforumapp.onrender.com/logout",
                                                                     method: "GET",
                                                                     success: function (data) {
                                                                         
@@ -417,7 +417,7 @@
                                                                     }
                                                                 })
                                                             }
-                                                            window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                                            window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html")
                                                         }
                                                     })
                                                 } else {
@@ -433,7 +433,7 @@
                             error: function (xhr, textStatus, errorThrown) {
                                 if (xhr.status === 403) {
                                     $.ajax({
-                                        url: "http://localhost:3500/refreshme",
+                                        url: "https://nodeforumapp.onrender.com/refreshme",
                                         method: "GET",
                                         success: function (data) {
                                            
@@ -447,7 +447,7 @@
                                             if (xhr.status === 403 || xhr.status === 401) {
                                                 
                                                 $.ajax({
-                                                    url: "http://localhost:3500/logout",
+                                                    url: "https://nodeforumapp.onrender.com/logout",
                                                     method: "GET",
                                                     success: function (data) {
                                                         
@@ -459,7 +459,7 @@
                                                     }
                                                 })
                                             }
-                                            window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                            window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html")
                                         }
                                     })
                                 } else {
@@ -480,7 +480,7 @@
             }
             else {
                 $.ajax({
-                    url: "http://localhost:3500/createPost",
+                    url: "https://nodeforumapp.onrender.com/createPost",
                     method: "POST",
                     data: {
                         "username": $(".StoreUser").text(),
@@ -494,7 +494,7 @@
                     error: function (xhr, textStatus, errorThrown) {
                         if (xhr.status === 403) {
                             $.ajax({
-                                url: "http://localhost:3500/refreshme",
+                                url: "https://nodeforumapp.onrender.com/refreshme",
                                 method: "GET",
                                 success: function (data) {
                                     
@@ -508,7 +508,7 @@
                                     if (xhr.status === 403 || xhr.status === 401) {
                                         
                                         $.ajax({
-                                            url: "http://localhost:3500/logout",
+                                            url: "https://nodeforumapp.onrender.com/logout",
                                             method: "GET",
                                             success: function (data) {
                                                 
@@ -520,7 +520,7 @@
                                             }
                                         })
                                     }
-                                    window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                    window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html")
                                 }
                             })
                         } else {
@@ -535,7 +535,7 @@
 
         $(".LogOut").click(function () {
             $.ajax({
-                url: "http://localhost:3500/logout",
+                url: "https://nodeforumapp.onrender.com/logout",
                 method: "GET",
                 success: function (data) {
                     
@@ -544,14 +544,14 @@
                             'Authorization': ""
                         }
                     });
-                    window.location.assign("http://localhost:3500/LogInSignUp.html");
+                    window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html");
                 }
             })
         })
 
         $(".pagenum").click(function () {
             $.ajax({
-                url: "http://localhost:3500/getAllPost",
+                url: "https://nodeforumapp.onrender.com/getAllPost",
                 method: "GET",
                 success: function (data) {
                     var combox = document.querySelector(".CommentBox");
@@ -629,7 +629,7 @@
                     
                         nn.addEventListener("click", function (e) {
                             $.ajax({
-                                url: "http://localhost:3500/deletePost",
+                                url: "https://nodeforumapp.onrender.com/deletePost",
                                 method: "POST",
                                 data: {
                                     "uId": parseInt(nn.parentElement.parentElement.firstElementChild.firstElementChild.innerText)
@@ -641,7 +641,7 @@
                                 error: function (xhr, textStatus, errorThrown) {
                                     if (xhr.status === 403) {
                                         $.ajax({
-                                            url: "http://localhost:3500/refreshme",
+                                            url: "https://nodeforumapp.onrender.com/refreshme",
                                             method: "GET",
                                             success: function (data) {
                                             
@@ -655,7 +655,7 @@
                                                 if (xhr.status === 403 || xhr.status === 401) {
                                                     
                                                     $.ajax({
-                                                        url: "http://localhost:3500/logout",
+                                                        url: "https://nodeforumapp.onrender.com/logout",
                                                         method: "GET",
                                                         success: function (data) {
                                                             
@@ -667,7 +667,7 @@
                                                         }
                                                     })
                                                 }
-                                                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                                window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html")
                                             }
                                         })
                                     } else {
@@ -691,7 +691,7 @@
                             }
                             else {
                                 $.ajax({
-                                    url: "http://localhost:3500/replyPost",
+                                    url: "https://nodeforumapp.onrender.com/replyPost",
                                     method: "POST",
                                     data: {
                                         "postIdref": parseInt(this.parentElement.parentElement.parentElement.firstElementChild.firstElementChild.innerText),
@@ -704,7 +704,7 @@
                                     error: function (xhr, textStatus, errorThrown) {
                                         if (xhr.status === 403) {
                                             $.ajax({
-                                                url: "http://localhost:3500/refreshme",
+                                                url: "https://nodeforumapp.onrender.com/refreshme",
                                                 method: "GET",
                                                 success: function (data) {
                                                     
@@ -718,7 +718,7 @@
                                                     if (xhr.status === 403 || xhr.status === 401) {
                                                         
                                                         $.ajax({
-                                                            url: "http://localhost:3500/logout",
+                                                            url: "https://nodeforumapp.onrender.com/logout",
                                                             method: "GET",
                                                             success: function (data) {
                                                                 
@@ -730,7 +730,7 @@
                                                             }
                                                         })
                                                     }
-                                                    window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                                    window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html")
                                                 }
                                             })
                                         } else {
@@ -760,7 +760,7 @@
                             var postIdnum = this.parentElement.parentElement.firstElementChild.firstElementChild.innerText
 
                             $.ajax({
-                                url: "http://localhost:3500/getReply",
+                                url: "https://nodeforumapp.onrender.com/getReply",
                                 method: "POST",
                                 data: {
                                     "postIdref": parseInt(postIdnum)
@@ -810,7 +810,7 @@
                                             var parentofall = this.parentElement.parentElement.parentElement.parentElement.parentElement
                                             
                                             $.ajax({
-                                                url: "http://localhost:3500/deleteReply",
+                                                url: "https://nodeforumapp.onrender.com/deleteReply",
                                                 method: "POST",
                                                 data: {
                                                     "uid": parseInt(replyuid)
@@ -821,7 +821,7 @@
                                                 error: function (xhr, textStatus, errorThrown) {
                                                     if (xhr.status === 403) {
                                                         $.ajax({
-                                                            url: "http://localhost:3500/refreshme",
+                                                            url: "https://nodeforumapp.onrender.com/refreshme",
                                                             method: "GET",
                                                             success: function (data) {
                                                                
@@ -835,7 +835,7 @@
                                                                 if (xhr.status === 403 || xhr.status === 401) {
                                                                     
                                                                     $.ajax({
-                                                                        url: "http://localhost:3500/logout",
+                                                                        url: "https://nodeforumapp.onrender.com/logout",
                                                                         method: "GET",
                                                                         success: function (data) {
                                                                             
@@ -847,7 +847,7 @@
                                                                         }
                                                                     })
                                                                 }
-                                                                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                                                window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html")
                                                             }
                                                         })
                                                     } else {
@@ -863,7 +863,7 @@
                                 error: function (xhr, textStatus, errorThrown) {
                                     if (xhr.status === 403) {
                                         $.ajax({
-                                            url: "http://localhost:3500/refreshme",
+                                            url: "https://nodeforumapp.onrender.com/refreshme",
                                             method: "GET",
                                             success: function (data) {
                                                 
@@ -877,7 +877,7 @@
                                                 if (xhr.status === 403 || xhr.status === 401) {
                                                     
                                                     $.ajax({
-                                                        url: "http://localhost:3500/logout",
+                                                        url: "https://nodeforumapp.onrender.com/logout",
                                                         method: "GET",
                                                         success: function (data) {
                                                             
@@ -889,7 +889,7 @@
                                                         }
                                                     })
                                                 }
-                                                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                                window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html")
                                             }
                                         })
                                     } else {
@@ -905,7 +905,7 @@
                 error: function (xhr, textStatus, errorThrown) {
                     if (xhr.status === 403) {
                         $.ajax({
-                            url: "http://localhost:3500/refreshme",
+                            url: "https://nodeforumapp.onrender.com/refreshme",
                             method: "GET",
                             success: function (data) {
                                 
@@ -919,7 +919,7 @@
                                 if (xhr.status === 403 || xhr.status === 401) {
                                     
                                     $.ajax({
-                                        url: "http://localhost:3500/logout",
+                                        url: "https://nodeforumapp.onrender.com/logout",
                                         method: "GET",
                                         success: function (data) {
                                             
@@ -931,7 +931,7 @@
                                         }
                                     })
                                 }
-                                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html")
                             }
                         })
                     } else {
@@ -944,7 +944,7 @@
 
         $('.clickme').click(function () {
             $.ajax({
-                url: "http://localhost:3500/clickme",
+                url: "https://nodeforumapp.onrender.com/clickme",
                 method: "POST",
                 success: function (data) {
                     
@@ -952,7 +952,7 @@
                 error: function (xhr, textStatus, errorThrown) {
                     if (xhr.status === 403) {
                         $.ajax({
-                            url: "http://localhost:3500/refreshme",
+                            url: "https://nodeforumapp.onrender.com/refreshme",
                             method: "GET",
                             success: function (data) {
                                 
@@ -966,7 +966,7 @@
                                 if (xhr.status === 403 || xhr.status === 401) {
                                     
                                     $.ajax({
-                                        url: "http://localhost:3500/logout",
+                                        url: "https://nodeforumapp.onrender.com/logout",
                                         method: "GET",
                                         success: function (data) {
                                             
@@ -978,7 +978,7 @@
                                         }
                                     })
                                 }
-                                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                window.location.assign("https://nodeforumapp.onrender.com/LogInSignUp.html")
                             }
                         })
                     } else {
