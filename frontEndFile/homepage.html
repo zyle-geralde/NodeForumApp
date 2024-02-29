@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        h1 {
+            font-size: 70px;
+        }
+
+        .imgbox {
+            min-height: 60px;
+            min-width: 60px;
+            margin-right: 30px;
+            background-color: rgb(213, 213, 213);
+            border-radius: 1000px;
+            border-style: solid;
+            border-color: rgb(255, 255, 255);
+            border-width: 3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+            font-family: Arial;
+            font-size: 20px;
+        }
+
+        .ReplyBox {
+            overflow: hidden;
+            height: 0px;
+            color: black;
+            transition: 0.5s;
+        }
+
+        .ReplyBox1 {
+            overflow-y: auto;
+            height: 400px;
+            color: black;
+            transition: 0.5s;
+        }
+    </style>
+</head>
+
+<body style="margin: 0px; background-color: rgb(218, 217, 217);">
+    <div style="display: flex; flex-direction: column;">
+        <div
+            style="height: 80px; background-color: rgb(42, 42, 42); display: flex; flex-direction: row;
+                align-items: center; padding-left: 30px; padding-right: 30px; justify-content: space-between; overflow-x: auto; overflow-y: hidden;">
+            <div style="display: flex; flex-direction: row; align-items: center;">
+                <div class=imgbox>
+                    <div style="height: 30px; width: 30px; border-radius: 100px; background-color: white;
+                        position: absolute; right: 16px; top: 10px;"></div>
+                    <div style="border-radius: 1000px; height: 50px; width: 50px; background-color: rgb(255, 255, 255);
+                        position: absolute; bottom: -35px; right: 7px;"></div>
+                </div>
+                <div class="StoreUser" style="color: white; font-family: Arial;">
+
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: row; font-size: 20px; color: white; font-family: Arial; cursor: pointer;">
+                <a href = "http://localhost:3500/homepage.html"style="margin-right: 10px; cursor: pointer;">All Post</a>
+                <a href = "http://localhost:3500/yourpost.html" style="cursor: pointer;">Your Post</a>
+            </div>
+            <button class="LogOut" style="cursor: pointer;">LogOut</button>
+        </div>
+        <div
+            style="display: flex; flex-direction: row; justify-content: center; margin-top: 20px; margin-left: 10px; margin-right: 10px; margin-bottom: 20px">
+            <textarea style="height: 70px; width: 600px;" class="PostText"></textarea>
+            <button class="CreatePost" style="cursor: pointer;">Create Post</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column;justify-content: start; align-items: center;">
+            <div style="display: flex; flex-direction: column;justify-content: start; width: auto;" class=CommentBox>
+
+            </div>
+        </div>
+
+
+        <div style="display: flex; flex-direction: row; justify-content: center;">
+            <div style="font-weight: bold;">Pages: </div>
+            <input type="number" min="1" value="1" style="width: 60px;" class="pagenum" inputmode="none"
+                onkeydown="return false;">
+        </div>
+
+    </div>
+
+</body>
+
+<script>
+    $(document).ready(async function () {
+        await $.ajax({
+            url: "http://localhost:3500/refreshme",
+            method: "GET",
+            success: function (data) {
+                $.ajaxSetup({
+                    headers: {
+                        'Authorization': `Bearer ${data.accessTok}`
+                    }
+                });
+                $(".StoreUser").text(data.foundUser);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                if (xhr.status === 403 || xhr.status === 401) {
+                    $.ajax({
+                        url: "http://localhost:3500/logout",
+                        method: "GET",
+                        success: function (data) {
+                            $.ajaxSetup({
+                                headers: {
+                                    'Authorization': ""
+                                }
+                            });
+                        }
+                    })
+                }
+                window.location.assign("http://localhost:3500/LogInSignUp.html")
+            }
+        })
+
+        var childofrep = document.querySelectorAll(".ShowRep");
+        for (n of childofrep) {
+            n.addEventListener("click", function (e) {
+                this.parentElement.nextElementSibling.classList.toggle("ReplyBox1")
+            })
+        }
+
+        $.ajax({
+            url: "http://localhost:3500/getAllPost",
+            method: "GET",
+            success: function (data) {
+                var start = data.length - 1;
+                var end = data.length - 5;
+
+                if (end < 0) {
+                    end = 0;
+                }
+
+                if (data.length == 0) {
+                    return;
+                }
+
+                for (var loop = start; loop >= end; loop--) {
+                    var repUser;
+                    var repbody;
+                    if (data[loop].hasOwnProperty("reply")) {
+                        repUser = data[loop].reply.Replyusername;
+                        repbody = data[loop].reply.body;
+                    }
+                    else {
+                        repUser = "";
+                        repbody = ""
+                    }
+
+                    var newdiv = document.createElement("div");
+                    var combox = document.querySelector(".CommentBox");
+                    combox.append(newdiv);
+                    newdiv.innerHTML = `<div class=form_Container
+                style="background-color:white;  width: auto;max-width: 800px; display: flex;
+            flex-direction: row; align-items: start; padding: 10px; border-radius: 10px; margin-left: 10px;margin-right: 10px; margin-bottom: 10px;">
+                <div class=imgbox>
+                    <div style="height: 30px; width: 30px; border-radius: 100px; background-color: white;
+                        position: absolute; right: 16px; top: 10px;"></div>
+                    <div style="border-radius: 1000px; height: 50px; width: 50px; background-color: rgb(255, 255, 255);
+                        position: absolute; bottom: -35px; right: 7px;"></div>
+                </div>
+                <div style="display: flex; flex-direction: column; width:100%">
+                    <div style="display: flex; flex-direction: row;">
+                        <div class = "PostId">${data[loop].uId}</div>
+                        <div class="HoldUserName" style="font-weight: bold; margin-bottom: 10px;">
+                            --${data[loop].username}
+                        </div>
+                    </div>
+                    <div class="bodyContent" style="word-break: break-all; margin-bottom: 10px;">
+                        ${data[loop].bodyPost}
+                    </div>
+                    <div
+                        style="display: flex; flex-direction: row; justify-content: space-between; padding: 0px 20px; margin-bottom: 10px;">
+                        <div class="ShowRep" style = "cursor: pointer;">Replies</div>
+                        <div style="display: flex; flex-direction: row;">
+                            <div class = ReplyBut style = "cursor: pointer;">Reply: </div>
+                            <input class=ReplyInput placeholder="..."
+                                style="border: none; border-bottom-style: solid; border-bottom-width: 1px;">
+                        </div>
+                        <div class="${data[loop].username === $(".StoreUser").text() ? "DeleteCom" : ""}" style = "cursor: pointer;">${data[loop].username === $(".StoreUser").text() ? "Delete" : ""}</div>
+                    </div>
+                    <div class="ReplyBox"  style="display: flex; flex-direction: column; justify-content: start; ">
+                    </div>
+                </div>
+            </div>`
+
+                }
+
+
+                var allDeleteBut = document.querySelectorAll(".DeleteCom");
+
+                for (nn of allDeleteBut) {
+                    nn.addEventListener("click", function (e) {
+                        $.ajax({
+                            url: "http://localhost:3500/deletePost",
+                            method: "POST",
+                            data: {
+                                "uId": parseInt(nn.parentElement.parentElement.firstElementChild.firstElementChild.innerText)
+                            },
+                            success: function (data) {
+                                location.reload();
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                if (xhr.status === 403) {
+                                    $.ajax({
+                                        url: "http://localhost:3500/refreshme",
+                                        method: "GET",
+                                        success: function (data) {
+                                            $.ajaxSetup({
+                                                headers: {
+                                                    'Authorization': `Bearer ${data.accessTok}`
+                                                }
+                                            });
+                                        },
+                                        error: function (xhr, textStatus, errorThrown) {
+                                            if (xhr.status === 403 || xhr.status === 401) {
+                                                $.ajax({
+                                                    url: "http://localhost:3500/logout",
+                                                    method: "GET",
+                                                    success: function (data) {
+                                                       
+                                                        $.ajaxSetup({
+                                                            headers: {
+                                                                'Authorization': ""
+                                                            }
+                                                        });
+                                                    }
+                                                })
+                                            }
+                                            window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                        }
+                                    })
+                                } else {
+
+                                    console.error('Error:', textStatus, errorThrown);
+                                }
+                            }
+
+                        })
+                    })
+                }
+
+                var ReplyInput = document.querySelectorAll(".ReplyInput");
+                var ReplyBut = document.querySelectorAll(".ReplyBut");
+
+                for (bb of ReplyBut) {
+                    bb.addEventListener("click", function (e) {
+                        var jj = this;
+                        if (this.nextElementSibling.value.trim() === "") {
+                        }
+                        else {
+                            $.ajax({
+                                url: "http://localhost:3500/replyPost",
+                                method: "POST",
+                                data: {
+                                    "postIdref": parseInt(this.parentElement.parentElement.parentElement.firstElementChild.firstElementChild.innerText),
+                                    "username": $(".StoreUser").text(),
+                                    "bodyReply": this.nextElementSibling.value
+                                },
+                                success: function (data) {
+                                    jj.nextElementSibling.value = " ";
+                                },
+                                error: function (xhr, textStatus, errorThrown) {
+                                    if (xhr.status === 403) {
+                                        $.ajax({
+                                            url: "http://localhost:3500/refreshme",
+                                            method: "GET",
+                                            success: function (data) {
+                                                $.ajaxSetup({
+                                                    headers: {
+                                                        'Authorization': `Bearer ${data.accessTok}`
+                                                    }
+                                                });
+                                            },
+                                            error: function (xhr, textStatus, errorThrown) {
+                                                if (xhr.status === 403 || xhr.status === 401) {
+                                                    
+                                                    $.ajax({
+                                                        url: "http://localhost:3500/logout",
+                                                        method: "GET",
+                                                        success: function (data) {
+                                                            
+                                                            $.ajaxSetup({
+                                                                headers: {
+                                                                    'Authorization': ""
+                                                                }
+                                                            });
+                                                        }
+                                                    })
+                                                }
+                                                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                            }
+                                        })
+                                    } else {
+
+                                        console.error('Error:', textStatus, errorThrown);
+                                    }
+                                }
+                            })
+                        }
+                    })
+                }
+
+
+                var replybox = document.querySelectorAll(".ReplyBox");
+                var repbut = document.querySelectorAll(".ShowRep");
+
+                for (rb of repbut) {
+                    rb.addEventListener("click", function (e) {
+                        if (this.parentElement.nextElementSibling.classList.contains("ReplyBox1")) {
+                            this.parentElement.nextElementSibling.innerHTML = "";
+                            this.parentElement.nextElementSibling.classList.toggle("ReplyBox1")
+                            return;
+                        }
+                        this.parentElement.nextElementSibling.classList.toggle("ReplyBox1")
+
+                        var addhere = this.parentElement.nextElementSibling;
+
+
+
+                        var postIdnum = this.parentElement.parentElement.firstElementChild.firstElementChild.innerText
+
+                        $.ajax({
+                            url: "http://localhost:3500/getReply",
+                            method: "POST",
+                            data: {
+                                "postIdref": parseInt(postIdnum)
+                            },
+                            success: function (data) {
+                                
+                                for (var loop = 0; loop < data.length; loop++) {
+                                    var repUser = data[loop].username;
+                                    var repbody = data[loop].bodyReply;
+                                    var repID = data[loop].uid;
+
+                                    var newdiv = document.createElement("div");
+
+                                    addhere.append(newdiv);
+
+                                    newdiv.innerHTML = `<div class=form_Container
+                            style="background-color: rgb(240, 240, 240); display: flex;
+            flex-direction: row; align-items: start; padding: 10px; border-radius: 10px; margin-left: 10px;margin-right: 10px; margin-bottom: 10px;">
+                            <div class=imgbox>
+                                <div style="height: 30px; width: 30px; border-radius: 100px; background-color: white;
+                        position: absolute; right: 16px; top: 10px;"></div>
+                                <div style="border-radius: 1000px; height: 50px; width: 50px; background-color: rgb(255, 255, 255);
+                        position: absolute; bottom: -35px; right: 7px;"></div>
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <div class="ReplyHoldUserName" style="font-weight: bold; margin-bottom: 10px; display:flex; flex-direction:row">
+                                    <div style = "margin-right: 10px">${repUser}</div>
+                                    <div class = "repid">${repID}</div>
+                                    
+                                </div>
+                                <div class="ReplybodyContent" style="word-break: break-all; margin-bottom: 10px;">
+                                    ${repbody}
+                                </div>
+                                <div
+                                    style="display: flex; flex-direction: row; justify-content: space-between; padding: 0px 20px; margin-bottom: 10px;">
+                                    <div class="${repUser === $(".StoreUser").text() ? "ReplyDeleteCom" : ""}" style = "cursor: pointer;">${repUser === $(".StoreUser").text() ? "Delete" : ""}</div>
+
+                                </div>
+                            </div>
+                        </div>`
+                                }
+
+                                var deleteReply = document.querySelectorAll(".ReplyDeleteCom");
+                                for (delr of deleteReply) {
+                                    delr.addEventListener("click", function (e) {
+                                        var replyuid = this.parentElement.parentElement.firstElementChild.firstElementChild.nextElementSibling.innerText
+                                        var formme = this.parentElement.parentElement.parentElement.parentElement;
+                                        var parentofall = this.parentElement.parentElement.parentElement.parentElement.parentElement
+                                        
+                                        $.ajax({
+                                            url: "http://localhost:3500/deleteReply",
+                                            method: "POST",
+                                            data: {
+                                                "uid": parseInt(replyuid)
+                                            },
+                                            success: function (data) {
+                                                parentofall.removeChild(formme);
+                                            },
+                                            error: function (xhr, textStatus, errorThrown) {
+                                                if (xhr.status === 403) {
+                                                    $.ajax({
+                                                        url: "http://localhost:3500/refreshme",
+                                                        method: "GET",
+                                                        success: function (data) {
+                                                            
+                                                            $.ajaxSetup({
+                                                                headers: {
+                                                                    'Authorization': `Bearer ${data.accessTok}`
+                                                                }
+                                                            });
+                                                        },
+                                                        error: function (xhr, textStatus, errorThrown) {
+                                                            if (xhr.status === 403 || xhr.status === 401) {
+                                                                
+                                                                $.ajax({
+                                                                    url: "http://localhost:3500/logout",
+                                                                    method: "GET",
+                                                                    success: function (data) {
+                                                                        
+                                                                        $.ajaxSetup({
+                                                                            headers: {
+                                                                                'Authorization': ""
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                })
+                                                            }
+                                                            window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                                        }
+                                                    })
+                                                } else {
+
+                                                    console.error('Error:', textStatus, errorThrown);
+                                                }
+                                            }
+
+                                        })
+                                    })
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                if (xhr.status === 403) {
+                                    $.ajax({
+                                        url: "http://localhost:3500/refreshme",
+                                        method: "GET",
+                                        success: function (data) {
+                                           
+                                            $.ajaxSetup({
+                                                headers: {
+                                                    'Authorization': `Bearer ${data.accessTok}`
+                                                }
+                                            });
+                                        },
+                                        error: function (xhr, textStatus, errorThrown) {
+                                            if (xhr.status === 403 || xhr.status === 401) {
+                                                
+                                                $.ajax({
+                                                    url: "http://localhost:3500/logout",
+                                                    method: "GET",
+                                                    success: function (data) {
+                                                        
+                                                        $.ajaxSetup({
+                                                            headers: {
+                                                                'Authorization': ""
+                                                            }
+                                                        });
+                                                    }
+                                                })
+                                            }
+                                            window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                        }
+                                    })
+                                } else {
+
+                                    console.error('Error:', textStatus, errorThrown);
+                                }
+                            }
+                        })
+                    })
+                }
+
+            }
+        })
+
+        $(".CreatePost").click(function () {
+            if ($(".PostText").val().trim() == "") {
+                
+            }
+            else {
+                $.ajax({
+                    url: "http://localhost:3500/createPost",
+                    method: "POST",
+                    data: {
+                        "username": $(".StoreUser").text(),
+                        "bodyPost": $(".PostText").val(),
+                    },
+                    success: function (data) {
+                        
+                        $(".PostText").val("")
+                        location.reload();
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        if (xhr.status === 403) {
+                            $.ajax({
+                                url: "http://localhost:3500/refreshme",
+                                method: "GET",
+                                success: function (data) {
+                                    
+                                    $.ajaxSetup({
+                                        headers: {
+                                            'Authorization': `Bearer ${data.accessTok}`
+                                        }
+                                    });
+                                },
+                                error: function (xhr, textStatus, errorThrown) {
+                                    if (xhr.status === 403 || xhr.status === 401) {
+                                        
+                                        $.ajax({
+                                            url: "http://localhost:3500/logout",
+                                            method: "GET",
+                                            success: function (data) {
+                                                
+                                                $.ajaxSetup({
+                                                    headers: {
+                                                        'Authorization': ""
+                                                    }
+                                                });
+                                            }
+                                        })
+                                    }
+                                    window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                }
+                            })
+                        } else {
+
+                            console.error('Error:', textStatus, errorThrown);
+                        }
+                    }
+                })
+
+            }
+        })
+
+        $(".LogOut").click(function () {
+            $.ajax({
+                url: "http://localhost:3500/logout",
+                method: "GET",
+                success: function (data) {
+                    
+                    $.ajaxSetup({
+                        headers: {
+                            'Authorization': ""
+                        }
+                    });
+                    window.location.assign("http://localhost:3500/LogInSignUp.html");
+                }
+            })
+        })
+
+        $(".pagenum").click(function () {
+            $.ajax({
+                url: "http://localhost:3500/getAllPost",
+                method: "GET",
+                success: function (data) {
+                    var combox = document.querySelector(".CommentBox");
+                    combox.innerHTML = "";
+                    var num = parseInt($(".pagenum").val());
+                    var diff = num * 5;
+                    var end = data.length - diff;
+                    var start = end + 4;
+
+                    if (end < 0) {
+                        end = 0;
+                    }
+
+                    for (var loop = start; loop >= end; loop--) {
+                        if (!data[loop]) {
+                            break;
+                        }
+                        var repUser;
+                        var repbody;
+                        var repClass;
+                        var repDel;
+                    
+                        if (data[loop].hasOwnProperty("reply")) {
+                            repUser = data[loop].reply.Replyusername;
+                            repbody = data[loop].reply.body;
+                        }
+                        else {
+                            repUser = "";
+                            repbody = "";
+                        }
+
+                        var newdiv = document.createElement("div");
+                        var combox = document.querySelector(".CommentBox");
+                        combox.append(newdiv);
+                        newdiv.innerHTML = `<div class=form_Container
+                style="background-color:white;  width: auto;max-width: 800px; display: flex;
+            flex-direction: row; align-items: start; padding: 10px; border-radius: 10px; margin-left: 10px;margin-right: 10px; margin-bottom: 10px;">
+                <div class=imgbox>
+                    <div style="height: 30px; width: 30px; border-radius: 100px; background-color: white;
+                        position: absolute; right: 16px; top: 10px;"></div>
+                    <div style="border-radius: 1000px; height: 50px; width: 50px; background-color: rgb(255, 255, 255);
+                        position: absolute; bottom: -35px; right: 7px;"></div>
+                </div>
+                <div style="display: flex; flex-direction: column; width:100%">
+                    <div style="display: flex; flex-direction: row;">
+                        <div class = "PostId">${data[loop].uId}</div>
+                        <div class="HoldUserName" style="font-weight: bold; margin-bottom: 10px;">
+                            --${data[loop].username}
+                        </div>
+                    </div>
+                    <div class="bodyContent" style="word-break: break-all; margin-bottom: 10px;">
+                        ${data[loop].bodyPost}
+                    </div>
+                    <div
+                        style="display: flex; flex-direction: row; justify-content: space-between; padding: 0px 20px; margin-bottom: 10px;">
+                        <div class="ShowRep" style = "cursor: pointer;">Replies</div>
+                        <div style="display: flex; flex-direction: row;">
+                            <div class = ReplyBut style = "cursor: pointer;">Reply: </div>
+                            <input class=ReplyInput placeholder="..."
+                                style="border: none; border-bottom-style: solid; border-bottom-width: 1px;">
+                        </div>
+                        <div class="${data[loop].username === $(".StoreUser").text() ? "DeleteCom" : ""}" style = "cursor: pointer;">${data[loop].username === $(".StoreUser").text() ? "Delete" : ""}</div>
+                    </div>
+                    <div class="ReplyBox"  style="display: flex; flex-direction: column; justify-content: start; ">
+                    </div>
+                </div>
+            </div>`
+
+                    }
+
+                    var allDeleteBut = document.querySelectorAll(".DeleteCom");
+                    
+
+                    for (nn of allDeleteBut) {
+                    
+                        nn.addEventListener("click", function (e) {
+                            $.ajax({
+                                url: "http://localhost:3500/deletePost",
+                                method: "POST",
+                                data: {
+                                    "uId": parseInt(nn.parentElement.parentElement.firstElementChild.firstElementChild.innerText)
+                                },
+                                success: function (data) {
+                                    
+                                    location.reload();
+                                },
+                                error: function (xhr, textStatus, errorThrown) {
+                                    if (xhr.status === 403) {
+                                        $.ajax({
+                                            url: "http://localhost:3500/refreshme",
+                                            method: "GET",
+                                            success: function (data) {
+                                            
+                                                $.ajaxSetup({
+                                                    headers: {
+                                                        'Authorization': `Bearer ${data.accessTok}`
+                                                    }
+                                                });
+                                            },
+                                            error: function (xhr, textStatus, errorThrown) {
+                                                if (xhr.status === 403 || xhr.status === 401) {
+                                                    
+                                                    $.ajax({
+                                                        url: "http://localhost:3500/logout",
+                                                        method: "GET",
+                                                        success: function (data) {
+                                                            
+                                                            $.ajaxSetup({
+                                                                headers: {
+                                                                    'Authorization': ""
+                                                                }
+                                                            });
+                                                        }
+                                                    })
+                                                }
+                                                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                            }
+                                        })
+                                    } else {
+
+                                        console.error('Error:', textStatus, errorThrown);
+                                    }
+                                }
+
+                            })
+                        })
+                    }
+
+                    var ReplyInput = document.querySelectorAll(".ReplyInput");
+                    var ReplyBut = document.querySelectorAll(".ReplyBut");
+
+                    for (bb of ReplyBut) {
+                        bb.addEventListener("click", function (e) {
+                            var jj = this;
+                            if (this.nextElementSibling.value.trim() == "") {
+                            
+                            }
+                            else {
+                                $.ajax({
+                                    url: "http://localhost:3500/replyPost",
+                                    method: "POST",
+                                    data: {
+                                        "postIdref": parseInt(this.parentElement.parentElement.parentElement.firstElementChild.firstElementChild.innerText),
+                                        "username": $(".StoreUser").text(),
+                                        "bodyReply": this.nextElementSibling.value
+                                    },
+                                    success: function (data) {
+                                        jj.nextElementSibling.value = "";
+                                    },
+                                    error: function (xhr, textStatus, errorThrown) {
+                                        if (xhr.status === 403) {
+                                            $.ajax({
+                                                url: "http://localhost:3500/refreshme",
+                                                method: "GET",
+                                                success: function (data) {
+                                                    
+                                                    $.ajaxSetup({
+                                                        headers: {
+                                                            'Authorization': `Bearer ${data.accessTok}`
+                                                        }
+                                                    });
+                                                },
+                                                error: function (xhr, textStatus, errorThrown) {
+                                                    if (xhr.status === 403 || xhr.status === 401) {
+                                                        
+                                                        $.ajax({
+                                                            url: "http://localhost:3500/logout",
+                                                            method: "GET",
+                                                            success: function (data) {
+                                                                
+                                                                $.ajaxSetup({
+                                                                    headers: {
+                                                                        'Authorization': ""
+                                                                    }
+                                                                });
+                                                            }
+                                                        })
+                                                    }
+                                                    window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                                }
+                                            })
+                                        } else {
+
+                                            console.error('Error:', textStatus, errorThrown);
+                                        }
+                                    }
+                                })
+                            }
+                        })
+                    }
+
+                    var replybox = document.querySelectorAll(".ReplyBox");
+                    var repbut = document.querySelectorAll(".ShowRep");
+
+                    for (rb of repbut) {
+                        rb.addEventListener("click", function (e) {
+                            if (this.parentElement.nextElementSibling.classList.contains("ReplyBox1")) {
+                                this.parentElement.nextElementSibling.innerHTML = "";
+                                this.parentElement.nextElementSibling.classList.toggle("ReplyBox1")
+                                return;
+                            }
+                            this.parentElement.nextElementSibling.classList.toggle("ReplyBox1")
+
+                            var addhere = this.parentElement.nextElementSibling;
+
+                            var postIdnum = this.parentElement.parentElement.firstElementChild.firstElementChild.innerText
+
+                            $.ajax({
+                                url: "http://localhost:3500/getReply",
+                                method: "POST",
+                                data: {
+                                    "postIdref": parseInt(postIdnum)
+                                },
+                                success: function (data) {
+                                    
+                                    for (var loop = 0; loop < data.length; loop++) {
+                                        var repUser = data[loop].username;
+                                        var repbody = data[loop].bodyReply;
+                                        var repID = data[loop].uid;
+
+                                        var newdiv = document.createElement("div");
+
+                                        addhere.append(newdiv);
+
+                                        newdiv.innerHTML = `<div class=form_Container
+                            style="background-color: rgb(240, 240, 240); display: flex;
+            flex-direction: row; align-items: start; padding: 10px; border-radius: 10px; margin-left: 10px;margin-right: 10px; margin-bottom: 10px;">
+                            <div class=imgbox>
+                                <div style="height: 30px; width: 30px; border-radius: 100px; background-color: white;
+                        position: absolute; right: 16px; top: 10px;"></div>
+                                <div style="border-radius: 1000px; height: 50px; width: 50px; background-color: rgb(255, 255, 255);
+                        position: absolute; bottom: -35px; right: 7px;"></div>
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <div class="ReplyHoldUserName" style="font-weight: bold; margin-bottom: 10px; display:flex; flex-direction:row">
+                                    <div style = "margin-right: 10px">${repUser}</div>
+                                    <div class = "repid">${repID}</div>
+                                </div>
+                                <div class="ReplybodyContent" style="word-break: break-all; margin-bottom: 10px;">
+                                    ${repbody}
+                                </div>
+                                <div
+                                    style="display: flex; flex-direction: row; justify-content: space-between; padding: 0px 20px; margin-bottom: 10px;">
+                                    <div class="${repUser === $(".StoreUser").text() ? "ReplyDeleteCom" : ""}" style = "cursor: pointer;">${repUser === $(".StoreUser").text() ? "Delete" : ""}</div>
+
+                                </div>
+                            </div>
+                        </div>`
+                                    }
+
+                                    var deleteReply = document.querySelectorAll(".ReplyDeleteCom");
+                                    for (delr of deleteReply) {
+                                        delr.addEventListener("click", function (e) {
+                                            var replyuid = this.parentElement.parentElement.firstElementChild.firstElementChild.nextElementSibling.innerText
+                                            var formme = this.parentElement.parentElement.parentElement.parentElement;
+                                            var parentofall = this.parentElement.parentElement.parentElement.parentElement.parentElement
+                                            
+                                            $.ajax({
+                                                url: "http://localhost:3500/deleteReply",
+                                                method: "POST",
+                                                data: {
+                                                    "uid": parseInt(replyuid)
+                                                },
+                                                success: function (data) {
+                                                    parentofall.removeChild(formme);
+                                                },
+                                                error: function (xhr, textStatus, errorThrown) {
+                                                    if (xhr.status === 403) {
+                                                        $.ajax({
+                                                            url: "http://localhost:3500/refreshme",
+                                                            method: "GET",
+                                                            success: function (data) {
+                                                               
+                                                                $.ajaxSetup({
+                                                                    headers: {
+                                                                        'Authorization': `Bearer ${data.accessTok}`
+                                                                    }
+                                                                });
+                                                            },
+                                                            error: function (xhr, textStatus, errorThrown) {
+                                                                if (xhr.status === 403 || xhr.status === 401) {
+                                                                    
+                                                                    $.ajax({
+                                                                        url: "http://localhost:3500/logout",
+                                                                        method: "GET",
+                                                                        success: function (data) {
+                                                                            
+                                                                            $.ajaxSetup({
+                                                                                headers: {
+                                                                                    'Authorization': ""
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    })
+                                                                }
+                                                                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                                            }
+                                                        })
+                                                    } else {
+
+                                                        console.error('Error:', textStatus, errorThrown);
+                                                    }
+                                                }
+
+                                            })
+                                        })
+                                    }
+                                },
+                                error: function (xhr, textStatus, errorThrown) {
+                                    if (xhr.status === 403) {
+                                        $.ajax({
+                                            url: "http://localhost:3500/refreshme",
+                                            method: "GET",
+                                            success: function (data) {
+                                                
+                                                $.ajaxSetup({
+                                                    headers: {
+                                                        'Authorization': `Bearer ${data.accessTok}`
+                                                    }
+                                                });
+                                            },
+                                            error: function (xhr, textStatus, errorThrown) {
+                                                if (xhr.status === 403 || xhr.status === 401) {
+                                                    
+                                                    $.ajax({
+                                                        url: "http://localhost:3500/logout",
+                                                        method: "GET",
+                                                        success: function (data) {
+                                                            
+                                                            $.ajaxSetup({
+                                                                headers: {
+                                                                    'Authorization': ""
+                                                                }
+                                                            });
+                                                        }
+                                                    })
+                                                }
+                                                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                                            }
+                                        })
+                                    } else {
+
+                                        console.error('Error:', textStatus, errorThrown);
+                                    }
+                                }
+                            })
+                        })
+                    }
+
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    if (xhr.status === 403) {
+                        $.ajax({
+                            url: "http://localhost:3500/refreshme",
+                            method: "GET",
+                            success: function (data) {
+                                
+                                $.ajaxSetup({
+                                    headers: {
+                                        'Authorization': `Bearer ${data.accessTok}`
+                                    }
+                                });
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                if (xhr.status === 403 || xhr.status === 401) {
+                                    
+                                    $.ajax({
+                                        url: "http://localhost:3500/logout",
+                                        method: "GET",
+                                        success: function (data) {
+                                            
+                                            $.ajaxSetup({
+                                                headers: {
+                                                    'Authorization': ""
+                                                }
+                                            });
+                                        }
+                                    })
+                                }
+                                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                            }
+                        })
+                    } else {
+
+                        console.error('Error:', textStatus, errorThrown);
+                    }
+                }
+            })
+        })
+
+        $('.clickme').click(function () {
+            $.ajax({
+                url: "http://localhost:3500/clickme",
+                method: "POST",
+                success: function (data) {
+                    
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    if (xhr.status === 403) {
+                        $.ajax({
+                            url: "http://localhost:3500/refreshme",
+                            method: "GET",
+                            success: function (data) {
+                                
+                                $.ajaxSetup({
+                                    headers: {
+                                        'Authorization': `Bearer ${data.accessTok}`
+                                    }
+                                });
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                if (xhr.status === 403 || xhr.status === 401) {
+                                    
+                                    $.ajax({
+                                        url: "http://localhost:3500/logout",
+                                        method: "GET",
+                                        success: function (data) {
+                                            
+                                            $.ajaxSetup({
+                                                headers: {
+                                                    'Authorization': ""
+                                                }
+                                            });
+                                        }
+                                    })
+                                }
+                                window.location.assign("http://localhost:3500/LogInSignUp.html")
+                            }
+                        })
+                    } else {
+
+                        console.error('Error:', textStatus, errorThrown);
+                    }
+                }
+            })
+        })
+
+
+    })
+
+
+
+</script>
+
+
+</html>

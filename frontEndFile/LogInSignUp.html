@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <style>
+            .form_Container{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
+    </head>
+    <body style="display: flex; flex-direction: row; justify-content: center; align-items: center; height: 700px;">
+        <div class = form_Container>
+            <h1 style="margin-bottom: 40px;">Log In/Sign Up</h1>
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div style="display: flex; flex-direction: row; margin-bottom: 10px;">
+                    <div>Username: </div>
+                    <input type = "text" placeholder="username" class = "userInput">
+                </div>
+    
+                <div style="display: flex; flex-direction: row; margin-bottom: 10px;">
+                    <div>Password: </div>
+                    <input type = "password" placeholder="password" class = "passwordInput">
+                </div>
+                <div style="display: flex; flex-direction: row; margin-top: 20px;">
+                    <button class = "SignUp" style="margin-right: 10px;">SignUp</button>
+                    <button class = "LogIn">LogIN</button>
+                </div>
+            </div>
+            <div class = "Emess" style="color: red;"></div>
+        </div>
+    </body>
+
+    <script>
+        $(document).ready(function(){
+            $(".SignUp").click(function(){
+                var userinp = document.querySelector(".userInput")
+                var passinp = document.querySelector(".passwordInput")
+                if($(".userInput").val() == "" || $(".passwordInput").val() == ""){
+                    
+                }
+                else{
+                    $.ajax({
+                        url:"http://localhost:3500/register",
+                        method:"POST",
+                        data: {
+                            "username":$(".userInput").val(),
+                            "password":$(".passwordInput").val()
+                        },
+                        success:function(data){
+                            $(".userInput").val("")
+                            $(".passwordInput").val("")
+                            $(".Emess").text("");
+                        },
+                        error:function(xhr, textStatus, errorThrown){
+                            if(xhr.status == 409){
+                                $(".Emess").text("Username exist");
+                            }
+                        }
+                    })
+                }
+            })
+            $(".LogIn").click(function(){
+                if($(".userInput").val() == "" || $(".passwordInput").val() == ""){
+
+                    return;
+                }
+                $.ajax({
+                    url:"http://localhost:3500/authenticate",
+                    headers: {'Authorization': ""},
+                    method:"POST",
+                    data:  {
+                         "username":$(".userInput").val(),
+                        "password":$(".passwordInput").val()
+                    },
+                    success:async function(data){
+                        window.location.assign("http://localhost:3500/homepage.html")
+                        $(".Emess").text("");
+                        $.ajaxSetup({
+                            headers: {
+                                'Authorization': `Bearer ${data.accessTok}`
+                            }
+                        });
+                    },
+                    error:function(xhr, textStatus, errorThrown){
+                            if(xhr.status == 401){
+                                $(".Emess").text("User not found");
+                            }
+                        }
+                })
+            })
+            $(".RefToken").click(function(){
+                $.ajax({
+                    url:"http://localhost:3500/refreshme",
+                    method:"GET",
+                    success:function(data){
+                        $.ajaxSetup({
+                            headers: {
+                                'Authorization': `Bearer ${data.accessTok}`
+                            }
+                        });
+                    }
+                })
+            })
+
+            $(".LogOut").click(function(){
+                $.ajax({
+                    url:"http://localhost:3500/logout",
+                    method:"GET",
+                    success:function(data){
+                        $.ajaxSetup({
+                            headers: {
+                                'Authorization': ""
+                            }
+                        });
+                    }
+                })
+            })
+            $('.clickme').click(function(){
+                $.ajax({
+                    url:"http://localhost:3500/clickme",
+                    method:"POST",
+                    success:function(data){
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        if (xhr.status === 403) {
+                            $.ajax({
+                                url:"http://localhost:3500/refreshme",
+                                method:"GET",
+                                success:function(data){
+                                    $.ajaxSetup({
+                                        headers: {
+                                            'Authorization': `Bearer ${data.accessTok}`
+                                        }
+                                    });
+                                },
+                                error: function(xhr,textStatus,errorThrown){
+                                    if(xhr.status === 403){
+                                        $.ajax({
+                                            url:"http://localhost:3500/logout",
+                                            method:"GET",
+                                            success:function(data){
+                                                $.ajaxSetup({
+                                                    headers: {
+                                                        'Authorization': ""
+                                                    }
+                                                });
+                                            }
+                                        })
+                                    }
+                                }
+                            })
+                        } else {
+                            
+                            console.error('Error:', textStatus, errorThrown);
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+</html>
