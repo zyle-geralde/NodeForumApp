@@ -202,8 +202,8 @@
                 var allDeleteBut = document.querySelectorAll(".DeleteCom");
 
                 for (nn of allDeleteBut) {
-                    var rell = this;
                     nn.addEventListener("click", function (e) {
+                        var rell = this;
                         $.ajax({
                             url: "https://nodeforumapp.onrender.com/deletePost",
                             method: "POST",
